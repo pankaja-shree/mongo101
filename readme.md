@@ -54,3 +54,28 @@ c.next() //shows the next object - 1 at a time
 * `consolidate` module provides wrappers for templates. 
 
 * While using `consolidate`, certain app settings need to be done - provide name of the template engine, associate it with html type, provide location of views folder that contains the templates.
+
+### GET Request with Express, Req Parameters and route names
+
+* Colon in routes - used to store the route names
+
+Eg: /:name - get the value after the colon and store it in a variable called name.
+use `var name = req.params.name` - to access the name variable
+
+* GET parameters - the parameters after `?` in routes
+
+Eg: /:name?var1=value
+`var param1 = req.query.var1`
+
+### POST Request with Express
+
+* POST request is handled by accessing the parameters in req.body.
+
+* `express.bodyParser()` - middleware in express - used before `app.router` - bodyParser processing happens before the next route loads. It will parse the body of request and populates req.body so that the next route below the current route can use req.body. 
+
+* `errorHandler()` has 4 args - err obj, req obj, res obj, next callback
+
+* `next` is a function passed in by the Express with req and res objs to handle errors. 
+
+* `next` is called with error obj, it Looks for `errorHandler()` middleware registered in the code and runs it.  
+
