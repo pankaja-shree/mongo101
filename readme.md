@@ -17,6 +17,8 @@ Creates a db named videos.
 
 * `db.movies.insertOne(JSON obj)` - creates a collection named movies inside a db and inserts a document
 
+* `db.movies.drop` - delete documents
+
 * `db.movies.find()` - lists the documents inside movies
 
 * `db.movies.find().pretty()` - proper visualisation for `find()`
@@ -78,4 +80,16 @@ Eg: /:name?var1=value
 * `next` is a function passed in by the Express with req and res objs to handle errors. 
 
 * `next` is called with error obj, it Looks for `errorHandler()` middleware registered in the code and runs it.  
+
+## Week 2: CRUD
+
+### Create 
+
+* `db.movies.insertOne(object)` - inserts the object to movies collection. 
+
+* `insertMany(objects)` - for multiple entries, prevents duplicate documents (those with same underscore id) by default and stops the insert operation after throwing `duplicate key error`.
+
+* `insertMany(objects, {"ordered" : false})` - when duplicate documents are found, it skips them and completes the insert operation for the rest of the entries, instead of stopping once the error is encountered. 
+
+
 
