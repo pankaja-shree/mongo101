@@ -83,7 +83,7 @@ Eg: /:name?var1=value
 
 ## Week 2: CRUD
 
-### Create 
+### 1. Create 
 
 * `db.movies.insertOne(object)` - inserts the object to movies collection. 
 
@@ -91,7 +91,7 @@ Eg: /:name?var1=value
 
 * `insertMany(objects, {"ordered" : false})` - when duplicate documents are found, it skips them and completes the insert operation for the rest of the entries, instead of stopping once the error is encountered. 
 
-### Read
+### 2. Read
 
 * `db.movies.find().pretty or db.movies.find({}).pretty() or db.movies.find(query document).pretty()` - dealt with in week 1. 
 
@@ -99,6 +99,51 @@ Eg: /:name?var1=value
 
 * `db.movies.find(query document).count()` - returns the number of documents matching the query. 
 
+#### Equality matches on arrays
+
+* Exact match - enclose the value inside square bracket, it will look for the exact match in the same order as those inside the square brackets. 
+Eg : `db.movies.find({writers: ["Ethan Coel"]})` - Returns the document in which the writers array should have only 1 element - Ethan Coel. 
+`db.movies.find({writers: ["Ethan Coel", "John Coel"]})` - Returns the document in which the writers array should have only 2 elements - Ethan Coel and John Coel - in the same order. 
+
+* Any element in the array matches the value - use normal scalar notation
+Eg : `db.movies.find({writers: "Ethan Coel"})` - Returns the document in which the writers array contains one of its elements as - Ethan Coel. 
+
+* An element of specific position - use dot notation
+Eg : `db.movies.find({"writers.0": "Ethan Coel"})` - Returns the document in which the writers array should have only 1 element - Ethan Coel. 
+
+#### Cursors
+
+* Read operations return a cursor object. 
+
+```javascript
+var c = db.movies.find();
+//function to iterate the results batch. 1 batch typically contains about 101 documents.
+var doc = function() {
+c.hasNext() ? c.next() : null;
+};
+doc();
+c.objsLeftInBatch();
+```
+
+#### Projections
+
+* Used to limit the fields that are returned on a query.
+
+1. Including Fields: fieldname: 1 includes the fieldname
+Eg : `db.movies.find({writers": "Ethan Coel"}, { title: 1 }).pretty()` - returns only the titles and `_id` matching the query
+`db.movies.find({writers": "Ethan Coel"}, { title: 1, _id: 0 }).pretty()` - returns only the titles matching the query
+
+2. Excluding fields: fieldname: 0 excludes the fieldname
+Eg `db.movies.find({writers": "Ethan Coel"}, { title: 0, year: 0, screenplay: 0 }).pretty()`
+
+#### Comparison Operators 
+
+* Comparison operations such as greater, lesser, etc.
+
+Examples:
+`db.movies.find({runtime: {$gt:90}}).pretty()` 
+`db.movies.find({runtime: {$gt:90 , $lt: 120}}).pretty()` 
+`db.movies.find({runtime: {$gte:90}}).pretty()` 
 
 
 
