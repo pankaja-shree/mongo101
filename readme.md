@@ -91,5 +91,15 @@ Eg: /:name?var1=value
 
 * `insertMany(objects, {"ordered" : false})` - when duplicate documents are found, it skips them and completes the insert operation for the rest of the entries, instead of stopping once the error is encountered. 
 
+### Read
+
+* `db.movies.find().pretty or db.movies.find({}).pretty() or db.movies.find(query document).pretty()` - dealt with in week 1. 
+
+* `db.movies.find(query document)` the query document can have more than 1 key: value pairs and they are all anded implicitly to find the match. Dot notations for keys need to be enclosed in quotes.
+
+* `db.movies.find(query document).count()` - returns the number of documents matching the query. 
+
+
+
 
 
