@@ -185,6 +185,6 @@ Eg: `db.movies.find({"awards.text": { $regex: /^Won\s.*/} })`
 Eg:
 1. `$all` - All elements should match the elements in the query array. `db.movies.find({genres : { $all: ["Comedy", "Drama" , "Crime"]} })`
 2. `$size` - Length of the array. `db.movies.find({genres : { $size: 1} })`
-3. `$elemMatch` - 
+3. `$elemMatch` - Match a single element within an array field. `db.movies.find({boxoffice : { $elemMatch: {country: "UK", revenue: { $gt: 15}}} })`
 
 
