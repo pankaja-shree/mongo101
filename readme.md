@@ -144,7 +144,47 @@ Examples:
 `db.movies.find({runtime: {$gt:90}}).pretty()` 
 `db.movies.find({runtime: {$gt:90 , $lt: 120}}).pretty()` 
 `db.movies.find({runtime: {$gte:90}}).pretty()` 
+`db.movies.find({rated: {$ne: "UNRATED"}}).prretty()` - ne - not equal to - returns even the documents not having the rated field.
+`rated: {$in: ["P", "PG"]}` - matching range of values
 
+* Can work with many fields, chain operators
 
+#### Element Operators
+
+* `$exists` - To check whether an element exists 
+Eg: `db.movies.find({ "tomato.meter" : {$exists: true} })`
+
+* `$type` - returns documents of the specified type
+Eg: `db.movies.find({ "_id" : {$type : "string"} })`
+
+#### Logical Operators
+
+* Operations - AND, OR, NOT and NOR (opposite of OR)
+
+Eg:
+`db.movies.find({ $or: [ {"tomato.meter": {$gt:95} }, {"metacritic":{ $gt: 88 } } ] })`
+
+* AND operation. 
+Eg:
+`db.movies.find({ $and: [ {"tomato.meter": {$gt:95} }, {"metacritic":{ $gt: 88 } } ] })` 
+is same as :
+`db.movies.find( {"tomato.meter": {$gt:95} }, {"metacritic":{ $gt: 88 } } )` 
+
+* AND operation allows us to specify constraints for the same field. 
+
+`db.movies.find({ $and: [ {"metacritic": {$ne:null} }, {"metacritic":{ $exists: true } } ] })` - this cannot be done using normal queries because duplicate fields in a json object are not allowed.
+
+#### Regex Operators
+
+Eg: `db.movies.find({"awards.text": { $regex: /^Won\s.*/} })`
+
+#### Array Operators
+
+* Work with array value fields.
+
+Eg:
+1. `$all` - All elements should match the elements in the query array. `db.movies.find({genres : { $all: ["Comedy", "Drama" , "Crime"]} })`
+2. `$size` - Length of the array. `db.movies.find({genres : { $size: 1} })`
+3. `$elemMatch` - 
 
 
