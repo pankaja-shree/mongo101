@@ -187,4 +187,50 @@ Eg:
 2. `$size` - Length of the array. `db.movies.find({genres : { $size: 1} })`
 3. `$elemMatch` - Match a single element within an array field. `db.movies.find({boxoffice : { $elemMatch: {country: "UK", revenue: { $gt: 15}}} })`
 
+### 3. Update
+
+#### updateOne
+
+* `updateOne({field1}, { updateOperator : {field2, field3 ...}})` - Finds the first document matching the field1 (the filter) and updates it with field2, field3, etc by applying the updateOperator.  
+
+#### Field Update Operators
+
+* Operate on fields inside documents. 
+
+Eg - `db.movies.updateOne({title: "Martian"}, { $set : {review: "My review"}})`
+`db.movies.updateOne({title: "Martian"}, { $inc : {"tomato.review": 3}})`
+
+#### Updating Arrays
+
+* Add 1 element to an array:
+`$push: {fieldname: {arrayelement}}`
+
+* Add many elements to an array - use modifiers. 
+Eg:
+```javascript
+db.movies.updateOne({title: "Martian"}, {$push: {reviews:
+                                                    {$each: [
+                                                        {element1},
+                                                        {element2},
+                                                        ...
+                                                    ],
+                                                    $position: 0,
+                                                    $slice: 5
+                                                    }}})
+```
+* `$position` used with `$each` indicates where the element has to be pushed in the array.
+
+* `$slice` modifier is used with `$each` to limit the size of the array. For keeping first 5, use 5; last five, use -5. 
+
+#### updateMany
+
+* Updates all documents matching the filter. 
+Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
+
+#### Upserts:
+
+* When no document is found matching the filter, insert a new document. 
+* Use a third argument in updateOne as {upsert: true}
+
+#### replaceOne
 
