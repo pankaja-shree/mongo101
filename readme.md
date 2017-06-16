@@ -234,3 +234,15 @@ Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
 
 #### replaceOne
 
+## Week 3: Node Driver
+
+* Use  `mongoimport` to import from json file. `mongorestore` dumps only bson data.
+* In `MongoClient.connect` function, the connection url contains - host:portnumber/database 
+* Default port is 27017. To connect to different port, use `mongod --port [portname]`
+* To pass query, first store the query document in `query` object.  
+
+### Using cursors in node driver
+
+* Result of find operation returns a cursor object. 
+* Use the data only when required. In `var cursor = db.collection('companies').find(query)` find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
+* In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation.  
