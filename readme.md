@@ -81,7 +81,7 @@ Eg: /:name?var1=value
 
 * `next` is called with error obj, it Looks for `errorHandler()` middleware registered in the code and runs it.  
 
-## Week 2: CRUD
+## Week 2: CRUD operations in mongo shell
 
 ### 1. Create 
 
