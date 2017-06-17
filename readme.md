@@ -244,5 +244,6 @@ Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
 ### Using cursors in node driver
 
 * Result of find operation returns a cursor object. 
-* Use the data only when required. In `var cursor = db.collection('companies').find(query)` find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
+* Use the data only when required. In `var cursor = db.collection('companies').find(query)`, without callback in find, the statement only dscribes the query. In this case find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
 * In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation.  
+* In cursor.forEach method, there are 2 callbacks as arguments. In the 1st argument, the callback is called for each document returned by it. When cursor is exhausted with all documents or when there's an error, the 2nd callbsck is executed.  
