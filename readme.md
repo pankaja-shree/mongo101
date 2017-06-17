@@ -236,7 +236,7 @@ Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
 
 ## Week 3: Node Driver
 
-* Use  `mongoimport` to import from json file. `mongorestore` dumps only bson data.
+* Use  `mongoimport` to import from human readable json file. `mongorestore` dumps only bson data.
 * In `MongoClient.connect` function, the connection url contains - host:portnumber/database 
 * Default port is 27017. To connect to different port, use `mongod --port [portname]`
 * To pass query, first store the query document in `query` object.  
