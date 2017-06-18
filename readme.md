@@ -37,6 +37,8 @@ c.hasNext() //returns true there is a  next entry yet to be visited.
 c.next() //shows the next object - 1 at a time
 ```
 
+* Documents in MongoDB do not need to have same set of fields.
+
 ### Node Driver
 
 * NodeJS driver is a driver written in JS, used to communicate between the server and mongodb - managing connections, handle requests and errors.
@@ -247,6 +249,8 @@ Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
 * Result of find operation returns a cursor object. 
 * Use the data only when required. In `var cursor = db.collection('companies').find(query)`, without callback in find, the statement only describes the query. In this case find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
 * For including projection, chain a call to project on the cursor. This adds additional detail to the query. 
-Eg: `cursor.project(projection)`
-* In cursor.forEach method, there are 2 callbacks as arguments. In the 1st argument, the callback is called for each document returned by it. When cursor is exhausted with all documents in all the batches or when there's an error, the 2nd callbsck is executed.  
+Eg: `cursor.project(projection)` or `find(query, projection)`
+* In cursor.forEach method, there are 2 callbacks as arguments. In the 1st argument, the callback is called for each document returned by it. When cursor is exhausted with all documents in all the batches or when there's an error, the 2nd callback is executed.  
 * In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation and reduced bandwidth consumption. 
+* Stringifying the `_id` is different in mongo shell and node driver. In mongo shell, the `_id` is of type `ObjectId` whereas in node, its just a hex number. 
+
