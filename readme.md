@@ -239,11 +239,14 @@ Eg: `db.movies.updateMany( {rated: null}, { $unset: {rated: " "}})
 * Use  `mongoimport` to import from human readable json file. `mongorestore` dumps only bson data.
 * In `MongoClient.connect` function, the connection url contains - host:portnumber/database 
 * Default port is 27017. To connect to different port, use `mongod --port [portname]`
-* To pass query, first store the query document in `query` object.  
+* To pass query, first store the query document in `query` object. 
+* Similarly store the projection in another object. 
 
 ### Using cursors in node driver
 
 * Result of find operation returns a cursor object. 
-* Use the data only when required. In `var cursor = db.collection('companies').find(query)`, without callback in find, the statement only dscribes the query. In this case find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
+* Use the data only when required. In `var cursor = db.collection('companies').find(query)`, without callback in find, the statement only describes the query. In this case find creates a cursor object but doesnt perform the operation unless a request to any document is made (through cursor.forEach). Data is streamed through cursor only when asked for. Whereas using toArray with find returns all the documents in one go. 
+* For including projection, chain a call to project on the cursor. This adds additional detail to the query. 
+Eg: `cursor.project(projection)`
 * In cursor.forEach method, there are 2 callbacks as arguments. In the 1st argument, the callback is called for each document returned by it. When cursor is exhausted with all documents in all the batches or when there's an error, the 2nd callbsck is executed.  
-* In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation.  
+* In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation and reduced bandwidth consumption. 

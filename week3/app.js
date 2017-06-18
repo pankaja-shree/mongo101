@@ -8,7 +8,7 @@ MongoClient.connect('mongodb://localhost:27017/crunchbase', function(err, db) {
     console.log("Successfully connected to MongoDB.");
 
     var query = {"category_code": "biotech"};
-
+    
     db.collection('companies').find(query).toArray(function(err, docs) {
 
         assert.equal(err, null);
