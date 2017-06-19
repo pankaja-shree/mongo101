@@ -260,3 +260,26 @@ Eg: `cursor.project(projection)` or `find(query, projection)`
 ### `$regex` with Node 
 
 * `"$options" : "1"` is used with `$regex` to indicate case insensitive regex expression. 
+
+### Skip, limit, sort in Node driver
+
+* MongoDB always executes curosr operations in this order- Sort, skip and limit - regardless of the order which we mention in the program. 
+
+* These are cursor methods like `project`. It adds to the query representation, and is executed only when we pass args to the function (forEach).
+
+* Sorting on single fields: 
+`sort({fieldname: 1 or -1})` 1 - ascending order, -1 - descending order
+
+* For sorting on multiple fields: Include the fields in an array
+Eg: `cursor.sort([["founded_year", 1], ["number_of_employees", -1]]);` 
+This sorts in the same order of fields as given: First, cmpanies are sorted by year in asc. order and within an individual year, the companies are sorted by employee number. 
+
+* Skip: Tells how many search results to skip starting from first. Eg: `skip(30)` skips first 30 documents. Useful in displaying results page by page. 
+
+* Limit: To limit the size of search result.
+
+### CommandLineArgs module
+
+* To pass command line arguments.
+
+* Single letter labels start with `-` and string labels with `--`
