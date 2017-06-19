@@ -17,7 +17,7 @@ MongoClient.connect('mongodb://localhost:27017/crunchbase', function(err, db) {
 
     var cursor = db.collection('companies').find(query);
     cursor.project(projection);
-    //cursor.sort({founded_year: -1});
+    //cursor.sort({founded_year: -1}); - single field
     cursor.sort([["founded_year", 1], ["number_of_employees", -1]]);
         
     var numMatches = 0;
