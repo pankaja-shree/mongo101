@@ -15,6 +15,9 @@
 Eg: `use videos`
 Creates a db named videos.
 
+* `use companies`
+  `db.dropDatabase()` will delete the companies database
+
 * `db.movies.insertOne(JSON obj)` - creates a collection named movies inside a db and inserts a document
 
 * `db.movies.drop` - delete documents
@@ -254,3 +257,6 @@ Eg: `cursor.project(projection)` or `find(query, projection)`
 * In case of massive docs, using forEach with cursor, only batch of documents are returned at a time. Results in faster operation and reduced bandwidth consumption. 
 * Stringifying the `_id` is different in mongo shell and node driver. In mongo shell, the `_id` is of type `ObjectId` whereas in node, its just a hex number. 
 
+### `$regex` with Node 
+
+* `"$options" : "1"` is used with `$regex` to indicate case insensitive regex expression. 
