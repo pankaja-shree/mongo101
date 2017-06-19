@@ -59,6 +59,7 @@ function queryDocument(options) {
         }               
     }
 
+//dot notation in array elements. Offices is an array of objects. country code is a field inside an object 
     if ("country" in options) {
         query["offices.country_code"] = options.country;
     }
