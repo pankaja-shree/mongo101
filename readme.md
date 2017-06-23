@@ -283,3 +283,39 @@ This sorts in the same order of fields as given: First, cmpanies are sorted by y
 * To pass command line arguments.
 
 * Single letter labels start with `-` and string labels with `--`
+
+## Week 4: MongoDB Schema Design
+
+* Relational DBs design - using 3rd normal form.
+
+* MongoDB design - Application driven schema
+
+* MongoDB supports rich documents - can store array, objects, embedded docs
+
+* No primary keys, foreign keys, etc - embedded docs solve the constraint problem
+
+* Model of a blog on RDBs - a table of columns:
+Postid   title    body    author    authoremail
+
+* Model of a blog on MongoDB: 
+``` javascript
+posts = {
+  _id: "",
+  title: "",
+  author: "",
+  content: "",
+  comments: [{author:"",content:"",date:""},...],
+  tags: [""],
+  date
+}
+authors = {
+  _id:"",
+  name:"",
+  email: "",
+  password
+}
+```
+* MongoDB provides atomic operations within a single document - like - update, findAndModify, addToSet, push, etc
+
+### 1:1 Relation in MongoDB
+
