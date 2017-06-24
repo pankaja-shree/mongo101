@@ -315,7 +315,50 @@ authors = {
   password
 }
 ```
-* MongoDB provides atomic operations within a single document - like - update, findAndModify, addToSet, push, etc
+* MongoDB does not provide transactions but provides atomic operations within a single document - like - update, findAndModify, addToSet, push, etc. Transaction-like operations can be accomplished using atomic operations since mongoDB has embedded docs which are prejoined.a
+
+* Atomic operations - When one document is being changed others wont be able to see it until all changes are complete. 
 
 ### 1:1 Relation in MongoDB
 
+* Example: Employee: Resume - one employee has one resume corresponding to him.
+
+Ways of modelling this:
+
+Method 1: Link resume in employee collection
+
+Employee collection : 
+_id:
+name:
+resume: 30
+
+Resume collection:
+_id:30
+jobs: []
+education: []
+
+Method 2: Link employee in the resume collection
+
+Employee collection : 
+_id: 10
+name:
+
+Resume collection:
+_id:30
+jobs: []
+education: []
+employee: 10
+
+Method 3: Embed one doc into another
+
+Employee inside Resume or vice versa.
+Employee:
+_id
+name
+resume: {}
+
+* Cons for embedding docs - 
+
+1. Cant embed documents that are more than 16mb.
+2. If the embeded doc is not frequently used, it is waste of space. 
+3. Atomicity of data - If you want to change both resume and employee info at the same time using atomic operations, embed on inside the other.
