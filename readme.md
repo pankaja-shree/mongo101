@@ -362,3 +362,56 @@ resume: {}
 1. Cant embed documents that are more than 16mb.
 2. If the embeded doc is not frequently used, it is waste of space. 
 3. Atomicity of data - If you want to change both resume and employee info at the same time using atomic operations, embed on inside the other.
+
+## Week 5: Indexes and Performance
+
+### Storage Engines
+
+* Mongo 3.0 onwards offer pluggable storage engine.
+* A storage engine is an interface between the disk (persistant storage) and the DB. Mongodb server talks to the disk using storage engine. 
+* All CRUD operations are done through storage engines.
+
+Node driver --> Mongo server --> Storage Engine --> Persistant storage
+
+* Handling of memory of the server and the disk is done by storage engine
+* Pluggable storage engine - can use multiple engines  
+* 2 storage engines - MMAP and WiredTiger
+* Mongo 3.2 onwards WiredTiger is the default engine.
+* Storage engine doesn't affect - 
+ 1. Communication between different mongodb servers in clusters
+ 2. API offered by the database
+
+ #### MMAPv1
+
+ * OS manages the memory used by each mapped file, deciding which parts to swap to disk. Virtual memory is 100GB and actual memory is 100 GB in a 64 bit system.
+
+ * Collection level locking - In mongodb, each collection is a file. While doing multiple operations on the same collection, only one write can happen at a time, so operations must wait one by one. 
+
+ * Allows in place update of data - 
+
+ * Power of 2 sizes for documents - update docs without moving
+
+ #### WiredTiger
+
+ * Easier and faster
+ * Offers Document level Concurrency - When two writes are at the same doc, one write has to wait
+ * Offers compression of data and indexes.
+ * WiredTiger manages the memory used by each mapped file, deciding which parts to swap to disk.
+ * Append only storage engine - no in place update. For updates, they create new space. Regularly cache out data that is not frequently used. Advantage - Operate without locks , offers concurrency. So we can perform more than 1 operation on a doc.
+ * To start WT manually:
+ `mongod [-dbpath W]` --storageEngine wiredTiger
+ `db.foo.stats()` - to find out which storage engine is used 
+
+### Indexes
+
+* Prevents scanning the entire collection to find a doc.
+* using WiredTiger, as of MongoDB 3.0, indexes are implemented in b+trees. 
+* Indexes are used for ordering the collection
+Eg: If there is an index (a,b,c) :
+Can search on a, (a,b), (a,c) and (a,b,c)
+but not c, (c,b) 
+* Updates, writes using index will be slower
+* Reads are much faster with indexes
+* But combination operations, such as update and deletion operations will benefit from the index in the query stage, and then may be slowed by the index during the write. It is still better off having an index, but there are some special cases where this may not be true.
+
+
