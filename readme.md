@@ -414,4 +414,25 @@ but not c, (c,b)
 * Reads are much faster with indexes
 * But combination operations, such as update and deletion operations will benefit from the index in the query stage, and then may be slowed by the index during the write. It is still better off having an index, but there are some special cases where this may not be true.
 
+#### Creating Indexes
 
+* Creating index takes time. 
+* findOne is faster than find - because after finding one doc it quits.
+* `db.students.createIndex({student_id:1})` - Index created for student_id, in ascending order.
+* Multiple indexes: `db.students.createIndex({student_id:1, class_id:-1})`
+
+#### Discovering Indexes
+
+* `db.students.getIndexes()` - MongoDB 3.0 onwards
+* By default _id index is present
+
+#### Deleting Indexes
+
+* `db.students.dropIndex({student_id:1})`
+* Provide same signature used when created.
+
+#### Multikey Indexes
+
+* Indexes when the keys are arrays
+* Only one key in a compound index can be array
+* `db.foo.explain.find()` - to explain the method find.
