@@ -20,7 +20,9 @@ Creates a db named videos.
 
 * `db.movies.insertOne(JSON obj)` - creates a collection named movies inside a db and inserts a document
 
-* `db.movies.drop` - delete documents
+* `db.movies.drop` - delete collection
+
+* `db.movies.remove({_id:23245},{justOne:true})` - removes a document, if there are duplicates. justOne is optional.
 
 * `db.movies.find()` - lists the documents inside movies
 
@@ -190,7 +192,7 @@ Eg: `db.movies.find({"awards.text": { $regex: /^Won\s.*/} })`
 Eg:
 1. `$all` - All elements should match the elements in the query array. `db.movies.find({genres : { $all: ["Comedy", "Drama" , "Crime"]} })`
 2. `$size` - Length of the array. `db.movies.find({genres : { $size: 1} })`
-3. `$elemMatch` - Match a single element within an array field. `db.movies.find({boxoffice : { $elemMatch: {country: "UK", revenue: { $gt: 15}}} })`
+3. `$elemMatch` - Match a single element within an array field. `db.movies.find({boxoffice : { $elemMatch: {country: "UK", revenue: { $gt: 15}}} })` - returns the pair where country is UK and the revenue for UK is gt 15.
 
 ### 3. Update
 
@@ -409,7 +411,7 @@ Node driver --> Mongo server --> Storage Engine --> Persistant storage
 * Indexes are used for ordering the collection
 Eg: If there is an index (a,b,c) :
 Can search on a, (a,b), (a,c) and (a,b,c)
-but not c, (c,b) 
+but not c, (c,b) , (b,a)
 * Updates, writes using index will be slower
 * Reads are much faster with indexes
 * But combination operations, such as update and deletion operations will benefit from the index in the query stage, and then may be slowed by the index during the write. It is still better off having an index, but there are some special cases where this may not be true.
@@ -435,4 +437,57 @@ but not c, (c,b)
 
 * Indexes when the keys are arrays
 * Only one key in a compound index can be array
-* `db.foo.explain.find()` - to explain the method find.
+
+#### Dot notation in multikey indexes
+
+* Dot notation is used to create indexes on elements of an array
+Eg:  `db.students.createIndex({'scores.score':1})` 
+
+#### Unique Indexes
+
+* Prevents duplicate entries
+* The index should appear in all documents.
+* `db.stuff.createIndex({thing:1}, {unique:true})`
+
+#### Sparse Indexes
+
+* Allows using indexes when the index key is missing in some documents.
+* Only the documents having the specified key will be indexed.
+* `db.stuff.createIndex({thing:1}, {unique:true, sparse:true})`Also prevents duplicate entries for the sparse index. 
+* Sparse index cannot be used for sorting since some docs will be missing. So server will perform complete collection scan.
+* Sparse index advantages - size of index will be smaller, flexibility in creating unique indexes
+
+#### Foreground Index creation
+
+* Default, Faster
+* Blocks writers and readers in the database where the collection is, at the time of index creation. 
+
+#### Background
+
+* Slower
+* Doesnt block readers and writers
+ `db.stuff.createIndex({thing:1}, {background:true})`
+
+### Explain 
+
+* Simulation of performance of the query, without actually bringing the data from the database 
+* Returns an explainable object.
+* `db.foo.explain().find({query doc})` - to explain the method find.
+* `db.foo.explain(true).find({query doc})` - to explain the method find after execution is completed.
+* Works on - find(), update(), aggregate(), remove
+* Doesn't work on insert.
+* explain().help() - gives a helper interfae for explain 
+* older version of explain worked only when the method returned cursor. Eg: remove({query}).explain didnt work because remove doesn't return a cursor. 
+* New ersion - explain().remove({query}) - works since the explainable object is first created and then the method is called on it.  
+
+#### Modes of Explain 
+
+1. queryPlanner - default, tells which index will be used.
+2. executionStats - db.foo.explain("executionStats").find({query doc})`. It will also include queryPlanner info
+3. allPlansExecution - does what query planner does periodically. More information for all index possibilities and why the winningPlan was chosen.
+
+### Covered Query
+
+* When query is same as index, it is covered entirely by index and thus no documents need to be scanned. 
+* In projection, only project the index keys and suppress others. 
+Eg: `db.foo.find({i:45, j:56},{_id:0, i:1, j:1})`
