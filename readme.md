@@ -491,3 +491,86 @@ Eg:  `db.students.createIndex({'scores.score':1})`
 * When query is same as index, it is covered entirely by index and thus no documents need to be scanned. 
 * In projection, only project the index keys and suppress others. 
 Eg: `db.foo.find({i:45, j:56},{_id:0, i:1, j:1})`
+
+### Index size
+
+* Index size is much less than actual data.
+* It is important that index fits in working memory.
+
+### Index cardinality: No. of index : No. of docs
+
+* Regular index - 1:1 
+* Sparse index - <= docs
+* Multikey index - > docs
+
+### Geospatial Indexes
+
+* Allow finding things based on location.
+
+#### 2D index
+
+* `db.places.createIndex({location: '2d', type:1})`- type:1 means ascending order
+* Eg: `db.places.find({location: {$near: [74,140]}}).limit(3)`
+* $near prints closest to farthest places.
+
+#### Spherical
+
+* Indexing Latitude and longitude coordinates
+* MongoDB takes (Longitude,latitude)
+* MongoDB uses GeoJSON specification for location data. 
+* `db.places.createIndex({location: '2dsphere'})`
+* Eg: ```javascript
+db.places.find({
+  location: {
+    $near: {
+      $geometry: { //required operator
+       type: "Point",
+       coordinates: [74,140]
+       },
+       $maxDistance: 1000
+       }
+  }
+}).pretty()```
+
+### Text Index
+
+* To search for words. 
+eg- db.sentences.createIndex({'words':'text'})
+db.sentences.find({$text:{$search:'dog'}}) - case insensitive search
+
+* Text score - how similar the word is to the actual one. Useful for finding the best match in the search.
+Eg : db.sentences.find({$text:{$search:'dog'}}, {score: {$meta:'textScore'}}).sort({score: {$meta:'textScore'}})
+
+### Efficiency of Index use
+
+
+
+### Profiling
+
+* Write entries (documents) to system.profile when query takes longer than specified time.
+* 3 levels: 
+1. 0 - off
+2. 1 - log slow queries
+3. 2 - log all queries - general debugging feature - to see database traffic
+
+* Procedure to log profile level 1 anything above 2ms - 
+`mongod --profile 1 --slowms 2`
+
+* To see the profile log - `db.system.profile.find().pretty()`
+
+* Seeing profile level in mongo shell - 
+`db.getProfilingLevel()`  - 0, 1 or 2
+`db.getProfilingStatus()` - to see --slowms value also
+
+* Setting profile level in mongo shell - 
+`db.setProfilingLevel(1,4)`
+
+* Turn off Profiling - 
+`db.setProfilingLevel(0)`
+
+### Mongotop and mongostat
+
+* High level view of where mongo is spending its time.
+
+
+
