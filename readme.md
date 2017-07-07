@@ -494,7 +494,7 @@ Eg: `db.foo.find({i:45, j:56},{_id:0, i:1, j:1})`
 
 ### Choosing an Index
 
-* When there are a number of suitable indexes, virtually, mongodb will issue a query in 3 parallel processes, like a race to reach the goal state (returning all results, or a threshold number of sorted results).
+* When there are a number of suitable indexes, virtually, mongodb will issue a query in parallel processes, like a race to reach the goal state (returning all results, or a threshold number of sorted results). - can be examined using executionStats.
 *  The winning query plan will be stored in a cache, to use the same index for a similar query.
 * Cache needs to be changed, when the collection is modified. 
 * Cache is refreshed in these cases: 
@@ -557,9 +557,18 @@ db.sentences.find({$text:{$search:'dog'}}) - case insensitive search
 * Text score - how similar the word is to the actual one. Useful for finding the best match in the search.
 Eg : db.sentences.find({$text:{$search:'dog'}}, {score: {$meta:'textScore'}}).sort({score: {$meta:'textScore'}})
 
-### Efficiency of Index use
+### Efficieny of Index use
 
+* Goal - Efficient read/write operations
+* Selectivity of index - minimize records scanned, how sorts are handled.
+* Testing using a specific index using `hint`
+* A good index is one in which NoOfDocsExamined is ~ NoOfDocsReturned
+* Avoid in memory sorts.
+* Order of index fields - put the quality query (like matching an exact value) before the range query  (gt, lt).
 
+### Logging
+
+* Slow queries (above 100ms) are automatically logged, by default when mongod is started.
 
 ### Profiling
 
@@ -584,9 +593,27 @@ Eg : db.sentences.find({$text:{$search:'dog'}}, {score: {$meta:'textScore'}}).so
 * Turn off Profiling - 
 `db.setProfilingLevel(0)`
 
-### Mongotop and mongostat
+### Mongotop 
 
 * High level view of where mongo is spending its time.
+* Eg: `mongotop <seconds>` mongotop will tell how much time is spent on read, write.
 
+### Mongostat
 
+* Performance tuning command
+* Will sample db every second, and give info on what's going on in that second (like insert, update, delete, query, etc)
+* Different in WiredTiger and MMAPv1.
+* Eg: `mongstat --port <portname>` port is optional
+* faults - page faults indicate no. of I/O - in MMAPv1
+* In wiredTiger - %dirty, %used - refers to cache 
 
+### Sharding
+
+* Splitting a large collection among servers. 
+* Used for high performance. 
+* Deploy multiple mongod servers, mongos is the router which is in communication with the application
+* Replica set keeps data across many servers, so that it can retrieve when data is lost.
+* Choose shard-key - Eg- student_id (an be a compound key) based on which the server is chosen. 
+* Insert must include entire shard-key.
+* For update, remove and find, if shard-key isn't given, mongos will check all the shards  (Broadcast)
+* For better performance always use shard-keys.
