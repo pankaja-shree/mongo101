@@ -492,10 +492,26 @@ Eg:  `db.students.createIndex({'scores.score':1})`
 * In projection, only project the index keys and suppress others. 
 Eg: `db.foo.find({i:45, j:56},{_id:0, i:1, j:1})`
 
+### Choosing an Index
+
+* When there are a number of suitable indexes, virtually, mongodb will issue a query in 3 parallel processes, like a race to reach the goal state (returning all results, or a threshold number of sorted results).
+*  The winning query plan will be stored in a cache, to use the same index for a similar query.
+* Cache needs to be changed, when the collection is modified. 
+* Cache is refreshed in these cases: 
+1. After a threshold number of writes.
+2. When u rebuild the index
+3. If any index is added or deleted
+4. If db is restarted.
+
 ### Index size
 
 * Index size is much less than actual data.
-* It is important that index fits in working memory.
+* Index is stored in the working set, in the memory. 
+* It is important that index fits in working memory so that it need not be pulled from disk everytime, which would make it slow.
+* `db.students.stats()` gives statistics about the indices like number of indexes, total index size, etc.
+* `db.students.totalIndexSize()` - shortcut to get total index size in mb.
+* Key features of WiredTiger Storage Engine - supports compression - prefix compression - allows to have smaller indexes.
+* Eg of running db with prefix compression - `mongod --storageEngine wiredTiger --wiredTigerIndexPrefixCompression true`
 
 ### Index cardinality: No. of index : No. of docs
 
