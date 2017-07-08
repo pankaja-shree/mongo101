@@ -617,3 +617,47 @@ Eg : db.sentences.find({$text:{$search:'dog'}}, {score: {$meta:'textScore'}}).so
 * Insert must include entire shard-key.
 * For update, remove and find, if shard-key isn't given, mongos will check all the shards  (Broadcast)
 * For better performance always use shard-keys.
+
+## Week 6 - The Aggregation Framework
+
+### An Aggregation Pipeline
+
+* Analytics tools for the docs in mongoDB. 
+* To run reports and analysis in the collections.
+* Based on Aggregation Pipeline - 
+Collection -- > Stages --> Output
+* Input and output of each stage is a stream of document(s)
+* At the end of pipeline, documents are returned. 
+* A stage of an Aggregation Pipeline - a data processing unit - 
+Input docs --> Data processor --> Output docs 
+* Data processor - Arithmetic / logic operations, modify fields, etc
+* Same stage processor can be reused, included multiple times in the same pipeline.
+
+### Familiar Operations used in stages
+
+* Match - similar to find
+* Project
+* Sort
+* skip
+* limit
+
+Syntax-
+Database.collection.aggregate([docs])
+Each doc should have - stage_operator: {query}
+
+Examples - 
+```javascript
+db.companies.aggregate([
+  { $match: {founded_year: 2004}},
+  { $sort: {name: 1}},
+  { $skip: 10},
+  { $limit: 5},
+  { $project: {
+    _id: 0,
+    name: 1,
+    founded_year: 1
+  }}
+])
+```
+Stages here - 
+match, sort, limit and project
