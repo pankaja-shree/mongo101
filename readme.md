@@ -661,3 +661,9 @@ db.companies.aggregate([
 ```
 Stages here - 
 match, sort, limit and project
+
+### Expressions
+
+* Conditional, Boolean, set, comparison, arithmetic expressions, array exp
+* Refer Aggregation Pipeline Overview 
+
