@@ -667,3 +667,36 @@ match, sort, limit and project
 * Conditional, Boolean, set, comparison, arithmetic expressions, array exp
 * Refer Aggregation Pipeline Overview 
 
+### `$project` and reshaping
+
+* Can perform many operations inside project.
+* Can convert nested fields into top level fields - by including `$`sing inside quotes.
+
+Eg: 
+```javascript
+db.companies.aggregate([
+  {$match: {"funding_rounds.investments.financial_org.permalink": "greylocck"}},
+  { $project: {
+    _id: 0,
+    name: 1,
+    ipo: "$ipo.pub_year",
+    valuation: "$ipo.valuation_amount"
+  }}
+])
+```
+* Can create a new document from the original.
+Eg: founded is a new nested document created from the result.
+```javascript
+db.companies.aggregate([
+  {$match: {"funding_rounds.investments.financial_org.permalink": "greylocck"}},
+  { $project: {
+    _id: 0,
+    name: 1,
+    founded: {
+      year: "$founded_year",
+      month: "$founded_month",
+      day: "founded_day"
+    }
+  }}
+])
+```
