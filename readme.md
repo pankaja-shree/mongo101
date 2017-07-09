@@ -700,3 +700,65 @@ db.companies.aggregate([
   }}
 ])
 ```
+
+### $unwind
+
+* Used for array fields - splitting the elements into separate keys.
+* Similar to spread operator in Javascript.
+```json
+{key1: "value1",
+key2: "value2",
+key3: [ "elem1",
+        "elem2",
+        ....
+        "elem-n"]}
+  this will unwind into
+{key1: "value1",
+key2: "value2",
+key3: "elem1"}
+
+{key1: "value1",
+key2: "value2",
+key3: "elem2"}
+
+....
+
+{key1: "value1",
+key2: "value2",
+key3: "elem-n"}
+
+Eg: Unwind the funding round array.
+```javascript
+db.companies.aggregate([
+  {$match: {"funding_rounds.investments.financial_org.permalink": "greylocck"}},
+  {$unwind: "$funding_rounds"},
+  { $project: {
+    _id: 0,
+    name: 1,
+    year: "$funding_rounds.founded_year",
+    amount: "$funding_rounds.raised_amount"
+  }}
+])
+```
+
+### Array expressions in Aggregation Pipelines.
+
+* Eg for using filter -  (Double dollar sign is used to reference variables)
+```javascript
+db.companies.aggregate([
+  {$match: {"funding_rounds.investments.financial_org.permalink": "greylock"}},
+  { $project: {
+    _id: 0,
+    name: 1,
+    year: "$funding_rounds.founded_year",
+    rounds: { $filter: {
+      input: "$funding_rounds",
+      as: "round",
+      cond: { $gte: ["$$round.raised_amount", 1000000000]}
+    }},
+     {$match: {"rounds.investments.financial_org.permalink": "greylock"}},
+  }}
+])
+```
+
+* other operators - $arrayElementAt, slice, size
