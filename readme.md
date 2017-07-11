@@ -762,3 +762,27 @@ db.companies.aggregate([
 ```
 
 * other operators - $arrayElementAt, slice, size
+
+### Accumulators
+
+* Operate on multiple fields from different documents
+Eg - sum, avg, first, last, max, min, etc
+
+* Available in group and project stage. 
+* In group stage - can perform on multiple docs
+* In project stage - works on arrays within the same doc.
+
+#### Accumulators in project stage
+
+* Eg using `$max`
+```javascript
+db.companies.aggregate([
+  {$match: {"funding_rounds" : { $exists: true, $ne: [ ]}}},
+  {$project: {
+    _id: 0,
+    name: 1,
+    largest_round: {$max: "funding.rounds.raised_amount" },
+    total_amount: {$sum: "funding.rounds.raised_amount" }
+  }}
+])
+```
