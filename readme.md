@@ -812,4 +812,6 @@ db.companies.aggregate([
 
 * Writes always go to primary node
 * Read can go to secondary node. But then it may have old data instead of updated one due to lag. 
+* can have different version of mongodb in replica sets. Can have wiredTiger primary, and MMAPv1 secondary, etc.
+
 
