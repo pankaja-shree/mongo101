@@ -786,3 +786,30 @@ db.companies.aggregate([
   }}
 ])
 ```
+## Week 7 - Application Engineering
+
+* w = write , j = journal settings values together - write concern.
+* By default, w=1, j = false - wait till write is acknowledged by the database, but doesnt wait for journal entry. - fast, but small window of vulnerability
+* w=1, j=1 - slow, but not vulnerable
+* w = 0 , j = 0 - unacknowleged 
+* If entries are made in journal, then if the data hasnt been written to database, it can be recovered from journal. 
+
+### Replica sets
+
+* Copies of data in multiple servers. - 1 primary, 2 or more replicas as secondaries - this group is known as replica set.
+* Replicas are created from primary asynchronously.
+* When primary goes down, one of the secondary becomes the new primary. 
+* If the old primary is set back up, it joins the secondary group. 
+
+#### Types of replica set nodes
+
+1. Regular - normal node - primary or secondary
+2. Arbiter - for voting purposes
+3. Delayed - priority is 0, cannot become primary node, cant participate in elections.
+4. Hidden - cannot become primary, p = 0, can participate in elections. For analytics purposes. 
+
+#### Write consistency
+
+* Writes always go to primary node
+* Read can go to secondary node. But then it may have old data instead of updated one due to lag. 
+
