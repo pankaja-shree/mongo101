@@ -785,7 +785,59 @@ db.companies.aggregate([
     total_amount: {$sum: "funding.rounds.raised_amount" }
   }}
 ])
+<<<<<<< HEAD
 ```
+
+#### Accumulators in group stage
+
+* Useful in grouping all docs with similar fields.
+* An _id field will tell what the grouping is based on.
+
+Eg- This will calculate the average for the docs  having same founded_year. A New _id is created here.
+* The id value in grouping stage is created as a labeled field, instead of a number (like `_id: "$founded_year"` ), to better understand what the number denotes.
+```javascript
+db.companies.aggregate([
+  { $group: {
+    _id: {founded_year: "$founded_year"},
+    average_num_of_emp: { $avg: "$number_of_emp"}
+    }},
+    { $sort: { average_num_of_emp: -1 }
+  ])
+  
+  ##### Other ways of creating id -
+  
+  * Multiple fields can be included as id in groups, depending on how we are grouping.
+  Eg: 
+```javascript
+{$group : {
+   _id: { founded_year: "$founded_year", category_code: "$category_code" }
+   }}
+   ```
+   * Embedded fields can be used as id -
+   ```javascript
+   {$group : {
+   _id: { ipo_year: "$ipo.pub_year" }
+   }}
+   ```
+   
+   * A doc can be used as an id:
+    ```javascript
+   {$group : {
+   _id: {  person: "$relationship.person" }
+   }}
+   where person is  a doc -
+   person: {
+   first: " ",
+   middle: " ",
+   last: " "
+   }
+   ```
+   
+   ### Project vs group
+   
+   * Project works with one document at a time. operations like $avg, $sum, etc work with project.
+   * Group works with a stream of documents. So, $push, $first, $last works only with groups.
+
 ## Week 7 - Application Engineering
 
 * w = write , j = journal settings values together - write concern.
@@ -815,3 +867,10 @@ db.companies.aggregate([
 * can have different version of mongodb in replica sets. Can have wiredTiger primary, and MMAPv1 secondary, etc.
 
 
+||||||| merged common ancestors
+```
+=======
+```
+   
+  
+>>>>>>> c8be38e12d94037cd3516686feaab1760e7e9349
