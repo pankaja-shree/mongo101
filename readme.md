@@ -785,7 +785,6 @@ db.companies.aggregate([
     total_amount: {$sum: "funding.rounds.raised_amount" }
   }}
 ])
-<<<<<<< HEAD
 ```
 
 #### Accumulators in group stage
@@ -803,6 +802,7 @@ db.companies.aggregate([
     }},
     { $sort: { average_num_of_emp: -1 }
   ])
+  ```
   
   ##### Other ways of creating id -
   
@@ -813,15 +813,15 @@ db.companies.aggregate([
    _id: { founded_year: "$founded_year", category_code: "$category_code" }
    }}
    ```
-   * Embedded fields can be used as id -
+  * Embedded fields can be used as id -
    ```javascript
    {$group : {
    _id: { ipo_year: "$ipo.pub_year" }
    }}
    ```
    
-   * A doc can be used as an id:
-    ```javascript
+  * A doc can be used as an id:
+  ```javascript
    {$group : {
    _id: {  person: "$relationship.person" }
    }}
