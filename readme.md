@@ -866,11 +866,3 @@ db.companies.aggregate([
 * Read can go to secondary node. But then it may have old data instead of updated one due to lag. 
 * can have different version of mongodb in replica sets. Can have wiredTiger primary, and MMAPv1 secondary, etc.
 
-
-||||||| merged common ancestors
-```
-=======
-```
-   
-  
->>>>>>> c8be38e12d94037cd3516686feaab1760e7e9349
