@@ -52,13 +52,20 @@ function ItemDAO(database) {
         *
         */
 
-        var categories = [];
-        var category = {
-            _id: "All",
-            num: 9999
-        };
-
-        categories.push(category)
+        //aggregate query
+        categories = db.item.aggregate([
+            {
+                $group: {
+                    _id: "$category",
+                    num: {$sum: 1}
+                }
+            },
+            {
+                $sort: {
+                    _id: 1
+                }
+            }
+        ])
 
         // TODO-lab1A Replace all code above (in this method).
 
