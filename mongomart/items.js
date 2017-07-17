@@ -207,6 +207,14 @@ function ItemDAO(database) {
         * Before implementing this method, ensure that you've already created
         * a SINGLE text index on title, slogan, and description. You should
         * simply do this in the mongo shell.
+
+        db.collection.createIndex(
+                           {
+                             title: "text",
+                             slogan: "text",
+                             description: "text"
+                           }
+                         )
         */
 
         let search_query = { $text: {$search: query}};
@@ -231,16 +239,10 @@ function ItemDAO(database) {
          *
          */
 
-        this.db.collection('item').find( { '_id': itemId} ).toArray( (err, docs) => {
-            
+        this.db.collection('item').find( { '_id': itemId} ).limit(1).next( (err, item) => {
+            assert.equal(err, null);
+            callback(item);
         });
-
-        // TODO-lab3 Replace all code above (in this method).
-
-        // TODO Include the following line in the appropriate
-        // place within your code to pass the matching item
-        // to the callback.
-        callback(item);
     }
 
 
