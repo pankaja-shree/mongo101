@@ -74,9 +74,14 @@ function CartDAO(database) {
          *
          */
 
-        callback(null);
-
-        // TODO-lab6 Replace all code above (in this method).
+        this.db.collection('cart').findOne({'userId': userId, 'items._id': itemId}, { 'items.$': 1},
+                (err, item) => {
+                    assert.equal(err, null);
+                    if(item != null){
+                        callback(item);
+                    }
+                    else callback(null);
+                });
     }
 
 
@@ -166,17 +171,24 @@ function CartDAO(database) {
         *
         */
 
-        var userCart = {
-            userId: userId,
-            items: []
-        }
-        var dummyItem = this.createDummyItem();
-        dummyItem.quantity = quantity;
-        userCart.items.push(dummyItem);
-        callback(userCart);
+       var updateDoc = {};
 
-        // TODO-lab7 Replace all code above (in this method).
+    if (quantity == 0) {
+        updateDoc = { "$pull": { items: { _id: itemId } } };
+    } else {
+        updateDoc = { "$set": { "items.$.quantity": quantity } };
+    }
 
+    this.db.collection("cart").findOneAndUpdate(
+        { userId: userId,
+          "items._id": itemId },
+        updateDoc,
+        { returnOriginal: false },
+        function(err, result) {
+            assert.equal(null, err);
+            console.log(result.value);
+            callback(result.value);
+        });
     }
 
     this.createDummyItem = function() {
